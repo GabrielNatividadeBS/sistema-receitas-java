@@ -1,4 +1,4 @@
-
+###NUNCA EDITE A MAIN DIRETAMENTE !
 -----
 
 ## O Fluxo de Trabalho Completo (Do Início ao Fim)
