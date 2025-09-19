@@ -162,8 +162,7 @@ Para executar o sistema completo, você precisa rodar o banco de dados, o back-e
 Abra o terminal (Git Bash, CMD, etc.) e clone o projeto para sua máquina:
 
 ```bash
-git clone https://github.com/liedsonpaiva/Sistema-de-Gerenciamento-de-Receitas-Culin-rias.git
-cd Sistema-de-Gerenciamento-de-Receitas-Culin-rias
+git clone https://github.com/VeectorVt/sistema-receitas-java.git
 ````
 
 ### Passo 2: Prepare o Banco de Dados
@@ -192,8 +191,4 @@ cd Sistema-de-Gerenciamento-de-Receitas-Culin-rias
 4. Encontre o arquivo `Main.java` do projeto `frontend`.
 5. Clique com o botão direito nele e selecione **Executar Arquivo**.
 
-```
-
-Se você quiser, posso também criar uma versão **mais enxuta e visual**, usando **tabelas e bullets para cada passo**, que fica ótimo para README. Quer que eu faça?
-```
 
