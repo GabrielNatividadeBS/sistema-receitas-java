@@ -145,7 +145,7 @@ Além de cumprir os requisitos da disciplina de Linguagem de Programação II, o
 
 ---
 
-Claro! Aqui está o seu texto formatado corretamente em Markdown:
+
 
 ````md
 ## 🚀 Como Executar o Projeto (Passo a Passo)
