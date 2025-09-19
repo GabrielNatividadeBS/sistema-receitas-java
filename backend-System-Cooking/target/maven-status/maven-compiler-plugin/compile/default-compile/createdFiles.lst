@@ -1,0 +1,5 @@
+com\mycompany\receitas_culinarias\conexao\Conexao.class
+com\mycompany\receitas_culinarias\controller\ReceitaController.class
+com\mycompany\receitas_culinarias\dao\ReceitaDAO.class
+com\mycompany\receitas_culinarias\model\Receita.class
+com\mycompany\receitas_culinarias\Receitas_Culinarias.class
