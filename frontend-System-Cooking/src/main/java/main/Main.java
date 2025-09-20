@@ -4,7 +4,7 @@ package main;
 import java.awt.CardLayout;
 import java.awt.Color;
  import api.ReceitaApiClient;
-import java.lang.foreign.SymbolLookup;
+//import java.lang.foreign.SymbolLookup;
 import modelo.Receita;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
@@ -57,6 +57,11 @@ public class Main extends javax.swing.JFrame {
         switch (categoriafiltroString) {
             case "Doce":
                 categoriaid = "3";
+                
+                break;
+                
+            case "Almoço":   
+                categoriaid = "1";
                
                 break;
             default:
