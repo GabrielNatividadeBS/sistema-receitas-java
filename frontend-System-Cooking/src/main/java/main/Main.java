@@ -61,6 +61,7 @@ public class Main extends javax.swing.JFrame {
                 break;
             default:
                 categoriaid = "Todos";
+                
         }
 
     for (Receita r : receitas) {
