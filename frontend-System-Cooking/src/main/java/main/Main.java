@@ -4,6 +4,7 @@ package main;
 import java.awt.CardLayout;
 import java.awt.Color;
  import api.ReceitaApiClient;
+import java.lang.foreign.SymbolLookup;
 import modelo.Receita;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
@@ -42,8 +43,39 @@ public class Main extends javax.swing.JFrame {
             });
         }
     }
+    private void popularTabelaFiltrada(String categoriafiltroString) {
+    DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+    model.setRowCount(0);
 
+    ReceitaApiClient apiClient = new ReceitaApiClient();
+    List<Receita> receitas = apiClient.buscarReceitas();
     
+    
+    String categoriaid;
+        
+        System.out.println(categoriafiltroString);
+        switch (categoriafiltroString) {
+            case "Doce":
+                categoriaid = "3";
+               
+                break;
+            default:
+                categoriaid = "Todos";
+        }
+
+    for (Receita r : receitas) {
+        if (categoriafiltroString.equals("Todos") || r.getCategoria().equalsIgnoreCase(categoriaid)) {
+            model.addRow(new Object[]{
+                r.getId(),
+                r.getNome(),
+                r.getIngredientes(),
+                r.getModoPreparo(),
+                r.getTempoPreparo(),
+                r.getCategoria()
+            });
+        }
+    } 
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -58,7 +90,7 @@ public class Main extends javax.swing.JFrame {
         painelGradiente2 = new com.mycompany.sistemareceitas.menusistema.componente.Painel_Gradiente.PainelGradiente();
         abapesquisa = new javax.swing.JTextField();
         rSButtonHover6 = new rojeru_san.complementos.RSButtonHover();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        filtro = new javax.swing.JComboBox<>();
         painelMain = new javax.swing.JPanel();
         Inicio = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -110,7 +142,7 @@ public class Main extends javax.swing.JFrame {
                 rSButtonHover2ActionPerformed(evt);
             }
         });
-        painelBorda1.add(rSButtonHover2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 224, -1));
+        painelBorda1.add(rSButtonHover2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 118, 224, -1));
 
         rSButtonHover7.setBackground(new java.awt.Color(66, 134, 244));
         rSButtonHover7.setText("Editar");
@@ -172,12 +204,12 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        jComboBox1.setBackground(new java.awt.Color(66, 121, 204));
-        jComboBox1.setForeground(new java.awt.Color(255, 255, 255));
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Doce", "Salgado", "Almoço", "Janta" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        filtro.setBackground(new java.awt.Color(66, 121, 204));
+        filtro.setForeground(new java.awt.Color(255, 255, 255));
+        filtro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Doce", "Salgado", "Almoço", "Janta" }));
+        filtro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                filtroActionPerformed(evt);
             }
         });
 
@@ -191,7 +223,7 @@ public class Main extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(rSButtonHover6, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(166, Short.MAX_VALUE))
         );
         painelGradiente2Layout.setVerticalGroup(
@@ -201,7 +233,7 @@ public class Main extends javax.swing.JFrame {
                 .addGroup(painelGradiente2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(abapesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(rSButtonHover6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(27, 27, 27))
         );
 
@@ -237,9 +269,7 @@ public class Main extends javax.swing.JFrame {
         Inicio.setLayout(InicioLayout);
         InicioLayout.setHorizontalGroup(
             InicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(InicioLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 809, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 815, Short.MAX_VALUE)
         );
         InicioLayout.setVerticalGroup(
             InicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -408,9 +438,11 @@ public class Main extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_rSButtonHover6ActionPerformed
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    private void filtroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filtroActionPerformed
+        String categoriaSelecionada = (String) filtro.getSelectedItem();
+        
+        popularTabelaFiltrada(categoriaSelecionada);
+    }//GEN-LAST:event_filtroActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
@@ -458,10 +490,10 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JPanel Remover;
     private javax.swing.JTextField abapesquisa;
     private javax.swing.JTextField categoria;
+    private javax.swing.JComboBox<String> filtro;
     private javax.swing.JTextField id;
     private javax.swing.JTextField ingrediente;
     private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
