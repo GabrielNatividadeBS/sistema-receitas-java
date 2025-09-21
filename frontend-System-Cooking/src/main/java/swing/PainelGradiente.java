@@ -1,4 +1,5 @@
-package com.mycompany.sistemareceitas.menusistema.componente.Painel_Gradiente;
+package swing;
+
 
 import java.awt.Color;
 import java.awt.GradientPaint;
