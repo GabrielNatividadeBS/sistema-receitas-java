@@ -1,26 +1,24 @@
-
 package main;
 
 import java.awt.CardLayout;
 import java.awt.Color;
- import api.ReceitaApiClient;
+import api.ReceitaApiClient;
 import modelo.Receita;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
-
 public class Main extends javax.swing.JFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Main.class.getName());
 
-    
     public Main() {
         initComponents();
         popularTabela();
         setBackground(new Color(0, 0, 0, 0));
         menu1.moverIniciar(Main.this);
-        
+
     }
+
     private void popularTabela() {
         // 1. Apaga as linhas antigas da tabela
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
@@ -43,7 +41,6 @@ public class Main extends javax.swing.JFrame {
         }
     }
 
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -413,10 +410,38 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        ReceitaApiClient apiClient = new ReceitaApiClient();
         int tempo = Integer.parseInt(tempop.getText());
-        model.addRow(new Object []{id.getText(),nome.getText (), ingrediente.getText(), modop.getText(), tempo, categoria.getText()});
-        
+
+        Receita receita = new Receita();
+        receita.setId(Integer.parseInt(id.getText()));
+        receita.setNome(nome.getText());
+        receita.setIngredientes(ingrediente.getText());
+        receita.setModoPreparo(modop.getText());
+        receita.setTempoPreparo(tempo);
+        receita.setCategoria(categoria.getText());
+
+        if (jButton1.getText().equals("Salvar Alterações")) {
+            // Atualizar no banco
+            apiClient.atualizarReceita(receita);
+
+            javax.swing.JOptionPane.showMessageDialog(this, "Receita atualizada com sucesso!");
+        } else {
+            // Inserir no banco
+            apiClient.adicionarReceita(receita);
+
+            javax.swing.JOptionPane.showMessageDialog(this, "Receita adicionada com sucesso!");
+        }
+
+        // Atualiza a tabela
+        popularTabela();
+
+        // Voltar para tela inicial
+        CardLayout card = (CardLayout) painelMain.getLayout();
+        card.show(painelMain, "inicio");
+
+        // Resetar o botão
+        jButton1.setText("Salvar");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void nomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nomeActionPerformed
@@ -424,9 +449,38 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_nomeActionPerformed
 
     private void rSButtonHover7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSButtonHover7ActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = jTable1.getSelectedRow();
+
+        if (selectedRow == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Selecione uma receita para editar!");
+            return;
+        }
+
+        // Pegar os valores da linha selecionada
+        String receitaId = jTable1.getValueAt(selectedRow, 0).toString();
+        String receitaNome = jTable1.getValueAt(selectedRow, 1).toString();
+        String receitaIngredientes = jTable1.getValueAt(selectedRow, 2).toString();
+        String receitaModo = jTable1.getValueAt(selectedRow, 3).toString();
+        String receitaTempo = jTable1.getValueAt(selectedRow, 4).toString();
+        String receitaCategoria = jTable1.getValueAt(selectedRow, 5).toString();
+
+        // Preencher os campos do formulário
+        id.setText(receitaId);
+        nome.setText(receitaNome);
+        ingrediente.setText(receitaIngredientes);
+        modop.setText(receitaModo);
+        tempop.setText(receitaTempo);
+        categoria.setText(receitaCategoria);
+
+        // Ir para o card de adicionar (mas na prática será editar)
+        CardLayout card = (CardLayout) painelMain.getLayout();
+        card.show(painelMain, "adicionar");
+
+        // Alterar o texto do botão para diferenciar
+        jButton1.setText("Salvar Alterações");
     }//GEN-LAST:event_rSButtonHover7ActionPerformed
 
+    
     /**
      * @param args the command line arguments
      */
