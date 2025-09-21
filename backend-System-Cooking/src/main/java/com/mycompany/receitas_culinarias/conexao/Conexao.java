@@ -15,7 +15,7 @@ public class Conexao {
     private static final String DRIVE_MYSQL = "com.mysql.cj.jdbc.Driver";
     private static final String ENDERECO = "jdbc:mysql://localhost:3306/receitas_db";
     private static final String USUARIO = "root";
-    private static final String SENHA = "senha";
+    private static final String SENHA = "Security.com";
 
     public static Connection getConexao() {
 
