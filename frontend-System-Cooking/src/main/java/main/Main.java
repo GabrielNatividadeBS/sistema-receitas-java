@@ -69,6 +69,16 @@ public class Main extends javax.swing.JFrame {
                 categoriaid = "1";
                
                 break;
+                
+            case "Janta":   
+                categoriaid = "2";
+               
+                break;    
+                
+            case "Salgado":   
+                categoriaid = "4";
+               
+                break;     
             default:
                 categoriaid = "Todos";
                 
@@ -126,8 +136,18 @@ public class Main extends javax.swing.JFrame {
             return nomeSemAcento.toLowerCase().contains(termoSemAcento.toLowerCase());
         }
     });
+    
+    if (jTable1.getRowCount() == 0) {
+        javax.swing.JOptionPane.showMessageDialog(
+            this,
+            "Nenhuma receita encontrada! Digite um nome válido.",
+            "Aviso",
+            javax.swing.JOptionPane.ERROR_MESSAGE
+        );
+        // Opcional: limpa o filtro para voltar a exibir todas
+        sorter.setRowFilter(null);
     }
-
+    }
     
     private void atualizarTabela(List<Receita> receitas) {
     DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
