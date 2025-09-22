@@ -1,3 +1,4 @@
+
 package main;
 
 import java.awt.CardLayout;
@@ -12,18 +13,19 @@ import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
-public class Main extends javax.swing.JFrame {
 
+public class Main extends javax.swing.JFrame {
+    
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Main.class.getName());
 
+    
     public Main() {
         initComponents();
         popularTabela();
         setBackground(new Color(0, 0, 0, 0));
         menu1.moverIniciar(Main.this);
-
+        
     }
-
     private void popularTabela() {
         // 1. Apaga as linhas antigas da tabela
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
@@ -585,38 +587,8 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_filtroActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        ReceitaApiClient apiClient = new ReceitaApiClient();
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         int tempo = Integer.parseInt(tempop.getText());
-
-        Receita receita = new Receita();
-        receita.setId(Integer.parseInt(id.getText()));
-        receita.setNome(nome.getText());
-        receita.setIngredientes(ingrediente.getText());
-        receita.setModoPreparo(modop.getText());
-        receita.setTempoPreparo(tempo);
-        receita.setCategoria(categoria.getText());
-
-        if (jButton1.getText().equals("Salvar Alterações")) {
-            // Atualizar no banco
-            apiClient.atualizarReceita(receita);
-
-            javax.swing.JOptionPane.showMessageDialog(this, "Receita atualizada com sucesso!");
-        } else {
-            // Inserir no banco
-            apiClient.adicionarReceita(receita);
-
-            javax.swing.JOptionPane.showMessageDialog(this, "Receita adicionada com sucesso!");
-        }
-
-        // Atualiza a tabela
-        popularTabela();
-
-        // Voltar para tela inicial
-        CardLayout card = (CardLayout) painelMain.getLayout();
-        card.show(painelMain, "inicio");
-
-        // Resetar o botão
-        jButton1.setText("Salvar");
         model.addRow(new Object []{nome.getText (), ingrediente.getText(), modop.getText(), tempo, categoria.getText()});
         
     }//GEN-LAST:event_jButton1ActionPerformed
