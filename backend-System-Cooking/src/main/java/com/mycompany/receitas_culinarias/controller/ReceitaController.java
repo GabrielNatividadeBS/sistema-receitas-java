@@ -24,5 +24,19 @@ public class ReceitaController {
             res.status(201);
             return "Receita adicionada!";
         });
+         //Deletar receita
+  delete("/receitas/:id", (req, res) -> {
+    int id = Integer.parseInt(req.params(":id"));
+
+    boolean sucesso = dao.deletar(id);
+    if (sucesso) {
+        res.status(200);
+        return "Receita deletada com sucesso!";
+    } else {
+        res.status(404);
+        return "Receita não encontrada.";
     }
+});
+    }
+
 }
