@@ -9,6 +9,7 @@
 # Build do Maven
 # A pasta mais importante para ignorar. Contém o código compilado.
 # ===============================================
+**/target/
 target/
 
 # Arquivos temporários gerados pelo Maven
