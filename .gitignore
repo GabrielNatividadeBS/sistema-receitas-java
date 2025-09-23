@@ -13,6 +13,7 @@
 target/
 
 .env
+.env.prod
 
 # Arquivos temporários gerados pelo Maven
 pom.xml.tag

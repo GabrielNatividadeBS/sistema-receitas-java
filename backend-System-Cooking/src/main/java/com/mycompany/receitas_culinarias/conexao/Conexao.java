@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public class Conexao {
 
    
-    private static final Dotenv dotenv = Dotenv.load();
+    private static final Dotenv dotenv = Dotenv.configure().filename(".env.prod").load();
 
     public static Connection getConexao() {
         try {
