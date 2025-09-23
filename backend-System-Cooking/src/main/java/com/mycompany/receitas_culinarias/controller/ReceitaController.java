@@ -7,6 +7,7 @@ import com.mycompany.receitas_culinarias.model.Receita;
 import static spark.Spark.*;
 
 public class ReceitaController {
+
     public static void rotas() {
         ReceitaDAO dao = new ReceitaDAO();
         Gson gson = new Gson();
@@ -24,6 +25,17 @@ public class ReceitaController {
             res.status(201);
             return "Receita adicionada!";
         });
+
+
+           // Editar receita
+        put("/receitas/:id", (req, res) -> {
+            int id = Integer.parseInt(req.params("id"));
+            Receita r = gson.fromJson(req.body(), Receita.class);
+            r.setId(id);
+            dao.atualizar(r);
+            res.status(200);
+            return "Receita atualizada!";
+        });
          //Deletar receita
   delete("/receitas/:id", (req, res) -> {
     int id = Integer.parseInt(req.params(":id"));
@@ -37,6 +49,7 @@ public class ReceitaController {
         return "Receita não encontrada.";
     }
 });
+
     }
     
     
