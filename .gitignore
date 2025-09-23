@@ -12,6 +12,8 @@
 **/target/
 target/
 
+.env
+
 # Arquivos temporários gerados pelo Maven
 pom.xml.tag
 pom.xml.releaseBackup

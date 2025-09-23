@@ -8,10 +8,10 @@ public class Receita {
     private int tempoPreparo;
     private String categoria;
 
-    // 🔹 Construtor vazio (necessário para Gson e para instanciar sem parâmetros)
+   
     public Receita() {}
 
-    // 🔹 Construtor completo (se quiser criar passando todos os dados de uma vez)
+  
     public Receita(int id, String nome, String ingredientes, String modoPreparo, int tempoPreparo, String categoria) {
         this.id = id;
         this.nome = nome;
