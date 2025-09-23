@@ -23,6 +23,7 @@ public class ReceitaDAO {
             e.printStackTrace();
         }
     }
+    
 
     public List<Receita> listar() {
         List<Receita> receitas = new ArrayList<>();
@@ -45,6 +46,7 @@ public class ReceitaDAO {
         }
         return receitas;
     }
+
     
     public Receita buscarPorId(int id) {
         Receita r = null;
@@ -84,4 +86,20 @@ public class ReceitaDAO {
             e.printStackTrace();
         }
     } 
+
+public boolean deletar(int id) {
+    String sql = "DELETE FROM receitas WHERE id = ?";
+
+    try (Connection con = Conexao.getConexao();
+         PreparedStatement stmt = con.prepareStatement(sql)) {
+
+        stmt.setInt(1, id);
+        int linhasAfetadas = stmt.executeUpdate();
+        return linhasAfetadas > 0;
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
 }
