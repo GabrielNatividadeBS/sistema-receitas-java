@@ -1,6 +1,7 @@
 package com.mycompany.receitas_culinarias;
 
 import com.mycompany.receitas_culinarias.controller.ReceitaController;
+import com.mycompany.receitas_culinarias.controller.CategoriaController;
 import static spark.Spark.*;
 
 public class Receitas_Culinarias {
@@ -10,7 +11,7 @@ public class Receitas_Culinarias {
         
         // Configura as rotas da API
         ReceitaController.rotas();
-        
+        CategoriaController.rotas();
         System.out.println("Servidor da API de Receitas iniciado em http://localhost:8080");
     }
 }

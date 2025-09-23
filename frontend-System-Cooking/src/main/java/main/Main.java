@@ -7,98 +7,93 @@ import api.ReceitaApiClient;
 import exibirdetalhe.DetalheReceita;
 import java.text.Normalizer;
 import modelo.Receita;
+import modelo.Categoria;  
 import java.util.List;
 import java.util.regex.Pattern;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
+import javax.swing.JOptionPane;
+import java.util.ArrayList;
+
 
 
 public class Main extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Main.class.getName());
-
+    private List<Receita> listaCompletaDeReceitas;
+    private List<Categoria> listaCompletaDeCategorias;
+    private final ReceitaApiClient apiClient;
     
     public Main() {
         initComponents();
-        popularTabela();
+         this.apiClient = new ReceitaApiClient(); 
+        
+        carregarDadosIniciaisDaAPI();
+        popularTabela(this.listaCompletaDeReceitas); 
+        popularComboBoxes(); //
         setBackground(new Color(0, 0, 0, 0));
         menu1.moverIniciar(Main.this);
         
     }
-    private void popularTabela() {
-        // 1. Apaga as linhas antigas da tabela
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        model.setRowCount(0);
-
-        // 2. Cria o cliente da API e busca as receitas
-        ReceitaApiClient apiClient = new ReceitaApiClient();
-        List<Receita> receitas = apiClient.buscarReceitas();
-
-        // 3. Popula a tabela com os novos dados vindos da API
-        for (Receita r : receitas) {
-            model.addRow(new Object[]{
-                false,
-                r.getId(),
-                r.getNome(),
-                r.getIngredientes(),
-                r.getModoPreparo(),
-                r.getTempoPreparo(),
-                r.getCategoria()
-            });
-        }
+    
+     private void carregarDadosIniciaisDaAPI() {
+        this.listaCompletaDeReceitas = apiClient.buscarReceitas();
+        this.listaCompletaDeCategorias = apiClient.buscarTodasCategorias();
     }
-    private void popularTabelaFiltrada(String categoriafiltroString) {
+    
+   private void popularTabela(List<Receita> receitas) {
     DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-    model.setRowCount(0);
+    model.setRowCount(0); 
 
-    ReceitaApiClient apiClient = new ReceitaApiClient();
-    List<Receita> receitas = apiClient.buscarReceitas();
-    
-    
-    String categoriaid;
-        
-        System.out.println(categoriafiltroString);
-        switch (categoriafiltroString) {
-            case "Doce":
-                categoriaid = "3";
-                
-                break;
-                
-            case "Almoço":   
-                categoriaid = "1";
-               
-                break;
-                
-            case "Janta":   
-                categoriaid = "2";
-               
-                break;    
-                
-            case "Salgado":   
-                categoriaid = "4";
-               
-                break;     
-            default:
-                categoriaid = "Todos";
-                
-        }
-
+    if (receitas == null) return;
     for (Receita r : receitas) {
-        if (categoriafiltroString.equals("Todos") || r.getCategoria().equalsIgnoreCase(categoriaid)) {
-            model.addRow(new Object[]{
-                false,
-                r.getId(),
-                r.getNome(),
-                r.getIngredientes(),
-                r.getModoPreparo(),
-                r.getTempoPreparo(),
-                r.getCategoria()
-            });
-        }
-    } 
+        model.addRow(new Object[]{
+            false, r.getId(), r.getNome(), r.getIngredientes(),
+            r.getModoPreparo(), r.getTempoPreparo(), r.getCategoria()
+        });
     }
+}
+private void popularComboBoxes() {
+    ReceitaApiClient apiClient = new ReceitaApiClient();
+    List<Categoria> categorias = this.listaCompletaDeCategorias; 
+
+  
+    filtro.removeAllItems();
+    filtro.addItem("Todas as Categorias");
+    if (categorias != null) {
+        for (Categoria c : categorias) {
+            filtro.addItem(c); // 
+        }
+    }
+
+    // --- Popula o ComboBox de ADICIONAR ---
+    comboCategoriaAdicionar.removeAllItems();
+    comboCategoriaAdicionar.addItem("Selecione uma categoria"); 
+    if (categorias != null) {
+        for (Categoria c : categorias) {
+            comboCategoriaAdicionar.addItem(c); 
+        }
+    }
+}
     
+//private void popularComboBoxCategorias() {;
+//    ReceitaApiClient apiClient = new ReceitaApiClient();
+//    List<Categoria> categorias = apiClient.buscarTodasCategorias();
+//
+//   
+//    filtro.removeAllItems();
+//    filtro.addItem("Todas as Categorias");
+//    for (Categoria c : categorias) {
+//        filtro.addItem(c.getNome());
+//    }
+//
+//    comboCategoriaAdicionar.removeAllItems();
+//    comboCategoriaAdicionar.addItem("Selecione uma categoria"); // Texto inicial
+//    for (Categoria c : categorias) {
+//        comboCategoriaAdicionar.addItem(c.getNome());
+//    }
+//}   
 
     
     // Função utilitária que remove acentos de uma String
@@ -165,6 +160,68 @@ public class Main extends javax.swing.JFrame {
         });
     }
     }
+    private void mostrarApenasReceitaNaTabela(Receita receita) {
+    DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+    model.setRowCount(0); // Limpa a tabela
+
+    // Adiciona apenas a linha da receita especificada
+    model.addRow(new Object[]{
+        false,
+        receita.getId(),
+        receita.getNome(),
+        receita.getIngredientes(),
+        receita.getModoPreparo(),
+        receita.getTempoPreparo(),
+        receita.getCategoria()
+    });
+
+    // Preenche o campo de busca e o filtro de categoria para refletir o estado
+    abapesquisa.setText(receita.getNome());
+    filtro.setSelectedItem(receita.getCategoria());
+}
+    
+    private void limparFormularioAdicionar() {
+    nome.setText("");
+    ingrediente.setText("");
+    modop.setText("");
+    tempop.setText("");
+    comboCategoriaAdicionar.setSelectedIndex(0);
+}
+    private Receita getReceitaDoFormulario() {
+    if (nome.getText().trim().isEmpty() || ingrediente.getText().trim().isEmpty() || 
+        modop.getText().trim().isEmpty() || tempop.getText().trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Todos os campos devem ser preenchidos!", "Erro", JOptionPane.ERROR_MESSAGE);
+        return null;
+    }
+
+    Object categoriaObj = comboCategoriaAdicionar.getSelectedItem();
+   
+  
+ if (categoriaObj == null || !(categoriaObj instanceof Categoria)) {
+    JOptionPane.showMessageDialog(this, "Por favor, selecione uma categoria válida!", "Erro", JOptionPane.ERROR_MESSAGE);
+    return null;
+}
+    
+     Categoria categoriaSelecionada = (Categoria) categoriaObj;
+
+     Receita receita = new Receita();
+    receita.setNome(nome.getText().trim());
+    receita.setIngredientes(ingrediente.getText().trim());
+    receita.setModoPreparo(modop.getText().trim());
+    receita.setTempoPreparo(Integer.parseInt(tempop.getText().trim()));
+    receita.setCategoria(categoriaSelecionada.getNome());
+    
+    return receita;
+}
+
+//private void finalizarAcaoComSucesso() {
+//    popularTabela(); 
+//    mostrarApenasReceitaNaTabela()
+//    CardLayout card = (CardLayout) painelMain.getLayout();
+//    card.show(painelMain, "inicio");
+//    limparFormularioAdicionar();
+//    
+//}
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -193,7 +250,7 @@ public class Main extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
-        categoria = new javax.swing.JTextField();
+        comboCategoriaAdicionar = new javax.swing.JComboBox<>();
         jScrollPane2 = new javax.swing.JScrollPane();
         ingrediente = new javax.swing.JTextArea();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -295,7 +352,6 @@ public class Main extends javax.swing.JFrame {
 
         filtro.setBackground(new java.awt.Color(66, 121, 204));
         filtro.setForeground(new java.awt.Color(255, 255, 255));
-        filtro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Doce", "Salgado", "Almoço", "Janta" }));
         filtro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 filtroActionPerformed(evt);
@@ -312,8 +368,8 @@ public class Main extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(rSButtonHover6, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(166, Short.MAX_VALUE))
+                .addComponent(filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(50, Short.MAX_VALUE))
         );
         painelGradiente2Layout.setVerticalGroup(
             painelGradiente2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -337,7 +393,7 @@ public class Main extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, "1", "sdas", "dsada", "dsadsa",  new Float(1.0),  new Integer(1)}
+                {null, "1", "sdas", "dsada", "dsadsa", null,  new Integer(1)}
             },
             new String [] {
                 "Selecionar", "Id", "Nome", "Ingredientes", "Modo de Preparo", "Tempo de Preparo", "Categoria"
@@ -384,8 +440,13 @@ public class Main extends javax.swing.JFrame {
         Adicionar.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel1.setBackground(new java.awt.Color(0, 0, 0));
-        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("Nome");
+
+        tempop.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tempopActionPerformed(evt);
+            }
+        });
 
         nome.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -393,13 +454,10 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setText("Ingrediente");
 
-        jLabel5.setForeground(new java.awt.Color(0, 0, 0));
         jLabel5.setText("Categoria");
 
-        jLabel6.setForeground(new java.awt.Color(0, 0, 0));
         jLabel6.setText("Modo de Preparo");
 
         jButton1.setText("Adicionar");
@@ -409,12 +467,13 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        jLabel7.setForeground(new java.awt.Color(0, 0, 0));
         jLabel7.setText("Tempo de Preparo");
 
-        categoria.addActionListener(new java.awt.event.ActionListener() {
+        comboCategoriaAdicionar.setBackground(new java.awt.Color(66, 121, 204));
+        comboCategoriaAdicionar.setForeground(new java.awt.Color(255, 255, 255));
+        comboCategoriaAdicionar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                categoriaActionPerformed(evt);
+                comboCategoriaAdicionarActionPerformed(evt);
             }
         });
 
@@ -436,44 +495,48 @@ public class Main extends javax.swing.JFrame {
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(AdicionarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, AdicionarLayout.createSequentialGroup()
-                            .addGroup(AdicionarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(nome, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGap(254, 254, 254)
-                            .addGroup(AdicionarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(categoria, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, AdicionarLayout.createSequentialGroup()
-                            .addGroup(AdicionarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(tempop)
-                                .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGap(376, 376, 376)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(162, Short.MAX_VALUE))
+                            .addGroup(AdicionarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, AdicionarLayout.createSequentialGroup()
+                                    .addGroup(AdicionarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(tempop)
+                                        .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGap(172, 172, 172)
+                                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, AdicionarLayout.createSequentialGroup()
+                                    .addGroup(AdicionarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(nome, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(254, 254, 254)
+                                    .addGroup(AdicionarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(comboCategoriaAdicionar, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING))
+                            .addGap(272, 272, 272))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         AdicionarLayout.setVerticalGroup(
             AdicionarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(AdicionarLayout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addGroup(AdicionarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(AdicionarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(AdicionarLayout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(nome, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(16, 16, 16)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(AdicionarLayout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(categoria, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(24, 24, 24)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(AdicionarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nome, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(comboCategoriaAdicionar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -529,13 +592,20 @@ public class Main extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void rSButtonHover1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSButtonHover1ActionPerformed
+        limparFormularioAdicionar();
         CardLayout card = (CardLayout) painelMain.getLayout();
+        jButton1.setText("Salvar");
         card.show(painelMain, "adicionar");
+         
     }//GEN-LAST:event_rSButtonHover1ActionPerformed
 
     private void rSButtonHover2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSButtonHover2ActionPerformed
-        CardLayout card = (CardLayout) painelMain.getLayout();
-        card.show(painelMain, "inicio");
+    abapesquisa.setText("");
+    filtro.setSelectedIndex(0);
+    popularTabela(this.listaCompletaDeReceitas); // Mostra a lista completa
+    
+    CardLayout card = (CardLayout) painelMain.getLayout();
+    card.show(painelMain, "inicio");
     }//GEN-LAST:event_rSButtonHover2ActionPerformed
 
     private void abapesquisaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abapesquisaActionPerformed
@@ -581,16 +651,73 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_rSButtonHover6ActionPerformed
 
     private void filtroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filtroActionPerformed
-        String categoriaSelecionada = (String) filtro.getSelectedItem();
-        
-        popularTabelaFiltrada(categoriaSelecionada);
+      
+    if (filtro.getSelectedItem() == null) {
+        return;
+    }
+
+   
+    Object itemSelecionado = filtro.getSelectedItem();
+    
+    
+    List<Receita> receitasParaExibir = new ArrayList<>();
+
+  
+    if (itemSelecionado instanceof String) {
+       
+        receitasParaExibir = this.listaCompletaDeReceitas;
+    } 
+  
+    else if (itemSelecionado instanceof Categoria) {
+       
+        String nomeCategoriaFiltro = ((Categoria) itemSelecionado).getNome();
+  
+        for (Receita receita : this.listaCompletaDeReceitas) {
+            if (receita.getCategoria().equalsIgnoreCase(nomeCategoriaFiltro)) {
+               
+                receitasParaExibir.add(receita);
+            }
+        }
+    }
+    
+    // No final, chama o método para popular a tabela com a lista resultante (que pode ser a completa ou a filtrada).
+    popularTabela(receitasParaExibir);
     }//GEN-LAST:event_filtroActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        int tempo = Integer.parseInt(tempop.getText());
-        model.addRow(new Object []{nome.getText (), ingrediente.getText(), modop.getText(), tempo, categoria.getText()});
-        
+    // Verifica se há um ID guardado. Se houver, estamos em MODO EDIÇÃO.
+    Object idObj = nome.getClientProperty("idReceitaEditando");
+    
+    Receita receitaDoFormulario = getReceitaDoFormulario();
+    if (receitaDoFormulario == null) return; // Se a validação falhar, para aqui
+
+    boolean sucesso = false;
+    Receita receitaResultante = null;
+
+    if (idObj != null) { 
+        // --- MODO EDIÇÃO ---
+        int idParaAtualizar = (Integer) idObj;
+        sucesso = apiClient.atualizarReceita(idParaAtualizar, receitaDoFormulario);
+        if (sucesso) {
+            receitaResultante = receitaDoFormulario;
+            receitaResultante.setId(idParaAtualizar);
+        }
+    } else { 
+        // --- MODO ADIÇÃO ---
+        Receita receitaSalva = apiClient.salvarReceita(receitaDoFormulario);
+        if (receitaSalva != null) {
+            sucesso = true;
+            receitaResultante = receitaSalva;
+        }
+    }
+
+ 
+    if (sucesso) {
+        carregarDadosIniciaisDaAPI(); // Atualiza a lista local com os dados do banco
+        CardLayout card = (CardLayout) painelMain.getLayout();
+        card.show(painelMain, "inicio"); // Volta para a tela principal
+        mostrarApenasReceitaNaTabela(receitaResultante); // Mostra e foca na receita alterada/adicionada
+    }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void nomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nomeActionPerformed
@@ -598,50 +725,57 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_nomeActionPerformed
 
     private void rSButtonHover7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSButtonHover7ActionPerformed
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-    int rowSelected = -1;
+    DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+    int contador = 0;
+    int linhaSelecionada = -1;
 
-    // Percorre a tabela e vê qual linha está selecionada pelo checkbox
+  
     for (int i = 0; i < model.getRowCount(); i++) {
-        Boolean marcado = (Boolean) model.getValueAt(i, 0);
+        Boolean marcado = (Boolean) model.getValueAt(i, 0); 
         if (marcado != null && marcado) {
-            rowSelected = i;
-            break; // só pega o primeiro selecionado
+            contador++;
+            linhaSelecionada = i; // 
         }
     }
 
-    if (rowSelected == -1) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Selecione uma receita para editar!");
-        return;
+    
+    if (contador == 0) {
+       
+        JOptionPane.showMessageDialog(this, "Por favor, selecione uma receita para editar.", "Aviso", JOptionPane.WARNING_MESSAGE);
+        return; 
+    } 
+    
+    if (contador > 1) {
+        
+        JOptionPane.showMessageDialog(this, "Por favor, selecione apenas UMA receita para editar de cada vez.", "Aviso", JOptionPane.WARNING_MESSAGE);
+        return; 
     }
 
-    // Recupera os dados da linha
-    int id = (Integer) model.getValueAt(rowSelected, 1);
-    String nomeReceita = (String) model.getValueAt(rowSelected, 2);
-    String ingredientesReceita = (String) model.getValueAt(rowSelected, 3);
-    String modoPreparo = (String) model.getValueAt(rowSelected, 4);
-    int tempoPreparo = (Integer) model.getValueAt(rowSelected, 5);
-    String categoriaReceita = String.valueOf(model.getValueAt(rowSelected, 6));
+    
+    int id = Integer.parseInt(model.getValueAt(linhaSelecionada, 1).toString());
+    String nomeReceita = model.getValueAt(linhaSelecionada, 2).toString();
+    String ingredientesReceita = model.getValueAt(linhaSelecionada, 3).toString();
+    String modoPreparo = model.getValueAt(linhaSelecionada, 4).toString();
+    int tempoPreparo = Integer.parseInt(model.getValueAt(linhaSelecionada, 5).toString());
+    String categoriaReceita = model.getValueAt(linhaSelecionada, 6).toString();
 
-    // Preenche os campos da tela de Adicionar
+   
     nome.setText(nomeReceita);
     ingrediente.setText(ingredientesReceita);
     modop.setText(modoPreparo);
     tempop.setText(String.valueOf(tempoPreparo));
-    categoria.setText(categoriaReceita);
+    comboCategoriaAdicionar.setSelectedItem(categoriaReceita);
 
-    // 👉 Aqui você poderia guardar o ID em uma variável de instância
-    // para o backend saber qual registro atualizar
+    
     nome.putClientProperty("idReceitaEditando", id);
+    
+    
+    jButton1.setText("Salvar Alterações");
 
-    // Mostra a tela de adicionar, mas em "modo edição"
+    
     CardLayout card = (CardLayout) painelMain.getLayout();
     card.show(painelMain, "adicionar");
     }//GEN-LAST:event_rSButtonHover7ActionPerformed
-
-    private void categoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categoriaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_categoriaActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         if (evt.getClickCount() == 2 && jTable1.getSelectedRow() != -1) {
@@ -661,6 +795,14 @@ public class Main extends javax.swing.JFrame {
         dialog.setVisible(true);
     }
     }//GEN-LAST:event_jTable1MouseClicked
+
+    private void tempopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tempopActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tempopActionPerformed
+
+    private void comboCategoriaAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboCategoriaAdicionarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_comboCategoriaAdicionarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -691,9 +833,9 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JPanel Adicionar;
     private javax.swing.JPanel Inicio;
     private javax.swing.JTextField abapesquisa;
-    private javax.swing.JTextField categoria;
+    private javax.swing.JComboBox<Object> comboCategoriaAdicionar;
     private javax.swing.JPanel editar;
-    private javax.swing.JComboBox<String> filtro;
+    private javax.swing.JComboBox<Object> filtro;
     private javax.swing.JTextArea ingrediente;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;

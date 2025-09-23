@@ -21,6 +21,11 @@ public class Receita {
         this.categoria = categoria;
     }
 
+    @Override
+    public String toString() {
+    return this.nome != null ? this.nome : "Selecione uma categoria";
+}
+    
     // 🔹 Getters
     public int getId() { return id; }
     public String getNome() { return nome; }

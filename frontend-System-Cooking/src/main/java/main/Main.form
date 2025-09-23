@@ -193,8 +193,8 @@
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="rSButtonHover6" min="-2" pref="100" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="filtro" min="-2" pref="100" max="-2" attributes="0"/>
-                      <EmptySpace pref="166" max="32767" attributes="0"/>
+                      <Component id="filtro" min="-2" pref="216" max="-2" attributes="0"/>
+                      <EmptySpace pref="50" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -267,20 +267,14 @@
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="5">
-                    <StringItem index="0" value="Todos"/>
-                    <StringItem index="1" value="Doce"/>
-                    <StringItem index="2" value="Salgado"/>
-                    <StringItem index="3" value="Almo&#xe7;o"/>
-                    <StringItem index="4" value="Janta"/>
-                  </StringArray>
+                  <StringArray count="0"/>
                 </Property>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="filtroActionPerformed"/>
               </Events>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;Object&gt;"/>
               </AuxValues>
             </Component>
           </SubComponents>
@@ -353,9 +347,7 @@
                             <Column editable="false" title="Modo de Preparo" type="java.lang.String">
                               <Data value="dsadsa"/>
                             </Column>
-                            <Column editable="false" title="Tempo de Preparo" type="java.lang.Float">
-                              <Data value="1.0"/>
-                            </Column>
+                            <Column editable="false" title="Tempo de Preparo" type="java.lang.Float"/>
                             <Column editable="false" title="Categoria" type="java.lang.Integer">
                               <Data value="1"/>
                             </Column>
@@ -363,6 +355,11 @@
                         </Property>
                         <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                           <TableColumnModel selectionModel="0">
+                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                              <Title/>
+                              <Editor/>
+                              <Renderer/>
+                            </Column>
                             <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                               <Title/>
                               <Editor/>
@@ -429,48 +426,55 @@
                               <Component id="jLabel2" alignment="0" min="-2" pref="75" max="-2" attributes="0"/>
                               <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
                                   <Component id="jScrollPane2" alignment="0" max="32767" attributes="0"/>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="nome" alignment="0" min="-2" pref="160" max="-2" attributes="0"/>
-                                          <Component id="jLabel1" alignment="0" min="-2" pref="75" max="-2" attributes="0"/>
-                                      </Group>
-                                      <EmptySpace min="-2" pref="254" max="-2" attributes="0"/>
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="jLabel5" min="-2" pref="75" max="-2" attributes="0"/>
-                                          <Component id="categoria" min="-2" pref="160" max="-2" attributes="0"/>
-                                      </Group>
-                                  </Group>
-                                  <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="jScrollPane3" alignment="0" max="32767" attributes="0"/>
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                          <Component id="tempop" max="32767" attributes="0"/>
-                                          <Component id="jLabel7" alignment="1" max="32767" attributes="0"/>
+                                      <Group type="103" groupAlignment="1" attributes="0">
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                                  <Component id="tempop" max="32767" attributes="0"/>
+                                                  <Component id="jLabel7" alignment="1" max="32767" attributes="0"/>
+                                              </Group>
+                                              <EmptySpace min="-2" pref="172" max="-2" attributes="0"/>
+                                              <Component id="jButton1" min="-2" pref="207" max="-2" attributes="0"/>
+                                          </Group>
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Group type="103" groupAlignment="0" attributes="0">
+                                                  <Component id="nome" alignment="0" min="-2" pref="160" max="-2" attributes="0"/>
+                                                  <Component id="jLabel1" alignment="0" min="-2" pref="75" max="-2" attributes="0"/>
+                                              </Group>
+                                              <EmptySpace min="-2" pref="254" max="-2" attributes="0"/>
+                                              <Group type="103" groupAlignment="0" attributes="0">
+                                                  <Component id="comboCategoriaAdicionar" min="-2" pref="158" max="-2" attributes="0"/>
+                                                  <Component id="jLabel5" min="-2" pref="75" max="-2" attributes="0"/>
+                                              </Group>
+                                          </Group>
+                                          <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
                                       </Group>
-                                      <EmptySpace min="-2" pref="376" max="-2" attributes="0"/>
-                                      <Component id="jButton1" min="-2" pref="100" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="272" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
-                          <EmptySpace pref="162" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="1" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
+                                  <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
                                   <Component id="jLabel1" min="-2" pref="27" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="nome" min="-2" pref="30" max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" attributes="0">
+                                  <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                                   <Component id="jLabel5" min="-2" pref="27" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="categoria" min="-2" pref="30" max="-2" attributes="0"/>
                               </Group>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="nome" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                              <Component id="comboCategoriaAdicionar" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jLabel2" min="-2" pref="27" max="-2" attributes="0"/>
@@ -478,7 +482,7 @@
                           <Component id="jScrollPane2" min="-2" pref="100" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jLabel6" min="-2" pref="27" max="-2" attributes="0"/>
-                          <EmptySpace pref="7" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                           <Component id="jScrollPane3" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jLabel7" min="-2" pref="27" max="-2" attributes="0"/>
@@ -498,13 +502,16 @@
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="0" green="0" red="0" type="rgb"/>
                     </Property>
-                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="0" green="0" red="0" type="rgb"/>
-                    </Property>
                     <Property name="text" type="java.lang.String" value="Nome"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="tempop">
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tempopActionPerformed"/>
+                  </Events>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="Main_tempop"/>
+                  </AuxValues>
                 </Component>
                 <Component class="javax.swing.JTextField" name="nome">
                   <Events>
@@ -513,25 +520,16 @@
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel2">
                   <Properties>
-                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="0" green="0" red="0" type="rgb"/>
-                    </Property>
                     <Property name="text" type="java.lang.String" value="Ingrediente"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel5">
                   <Properties>
-                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="0" green="0" red="0" type="rgb"/>
-                    </Property>
                     <Property name="text" type="java.lang.String" value="Categoria"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel6">
                   <Properties>
-                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="0" green="0" red="0" type="rgb"/>
-                    </Property>
                     <Property name="text" type="java.lang.String" value="Modo de Preparo"/>
                   </Properties>
                 </Component>
@@ -545,16 +543,27 @@
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel7">
                   <Properties>
-                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="0" green="0" red="0" type="rgb"/>
-                    </Property>
                     <Property name="text" type="java.lang.String" value="Tempo de Preparo"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JTextField" name="categoria">
+                <Component class="javax.swing.JComboBox" name="comboCategoriaAdicionar">
+                  <Properties>
+                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="cc" green="79" red="42" type="rgb"/>
+                    </Property>
+                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                    </Property>
+                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                      <StringArray count="0"/>
+                    </Property>
+                  </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="categoriaActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="comboCategoriaAdicionarActionPerformed"/>
                   </Events>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;Object&gt;"/>
+                  </AuxValues>
                 </Component>
                 <Container class="javax.swing.JScrollPane" name="jScrollPane2">
                   <AuxValues>
