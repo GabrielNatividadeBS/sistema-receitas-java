@@ -34,7 +34,8 @@ public class ReceitaController {
     }
 });
 
-        // Editar receita
+
+           // Editar receita
         put("/receitas/:id", (req, res) -> {
             try {
             int id = Integer.parseInt(req.params("id"));
@@ -49,5 +50,22 @@ public class ReceitaController {
             }
           
         });
+         //Deletar receita
+  delete("/receitas/:id", (req, res) -> {
+    int id = Integer.parseInt(req.params(":id"));
+
+    boolean sucesso = dao.deletar(id);
+    if (sucesso) {
+        res.status(200);
+        return "Receita deletada com sucesso!";
+    } else {
+        res.status(404);
+        return "Receita não encontrada.";
     }
+});
+
+    }
+    
+    
+
 }
