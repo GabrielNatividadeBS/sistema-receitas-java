@@ -67,7 +67,7 @@ private void popularComboBoxes() {
         }
     }
 
-    // --- Popula o ComboBox de ADICIONAR ---
+    
     comboCategoriaAdicionar.removeAllItems();
     comboCategoriaAdicionar.addItem("Selecione uma categoria"); 
     if (categorias != null) {
@@ -77,26 +77,10 @@ private void popularComboBoxes() {
     }
 }
     
-//private void popularComboBoxCategorias() {;
-//    ReceitaApiClient apiClient = new ReceitaApiClient();
-//    List<Categoria> categorias = apiClient.buscarTodasCategorias();
-//
-//   
-//    filtro.removeAllItems();
-//    filtro.addItem("Todas as Categorias");
-//    for (Categoria c : categorias) {
-//        filtro.addItem(c.getNome());
-//    }
-//
-//    comboCategoriaAdicionar.removeAllItems();
-//    comboCategoriaAdicionar.addItem("Selecione uma categoria"); // Texto inicial
-//    for (Categoria c : categorias) {
-//        comboCategoriaAdicionar.addItem(c.getNome());
-//    }
-//}   
+
 
     
-    // Função utilitária que remove acentos de uma String
+   
     private String removerAcentos(String texto) {
     String normalizado = Normalizer.normalize(texto, Normalizer.Form.NFD);
     Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
@@ -112,19 +96,19 @@ private void popularComboBoxes() {
     jTable1.setRowSorter(sorter);
 
     if (termo.isEmpty()) {
-        // Se não digitar nada, remove o filtro e mostra todas
+        
         sorter.setRowFilter(null);
         return;
     }
 
-    // remove acentos do termo buscado
+   
     String termoSemAcento = removerAcentos(termo);
 
-    // aplica filtro no campo "Nome" (coluna 1)
+    
     sorter.setRowFilter(new RowFilter<DefaultTableModel, Integer>() {
         @Override
         public boolean include(Entry<? extends DefaultTableModel, ? extends Integer> entry) {
-            String nome = entry.getStringValue(2); // coluna Nome
+            String nome = entry.getStringValue(2); 
             if (nome == null) return false;
 
             String nomeSemAcento = removerAcentos(nome);
@@ -139,14 +123,14 @@ private void popularComboBoxes() {
             "Aviso",
             javax.swing.JOptionPane.ERROR_MESSAGE
         );
-        // Opcional: limpa o filtro para voltar a exibir todas
+        
         sorter.setRowFilter(null);
     }
     }
     
     private void atualizarTabela(List<Receita> receitas) {
     DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-    model.setRowCount(0); // limpa tabela
+    model.setRowCount(0); 
 
     for (Receita r : receitas) {
         model.addRow(new Object[]{
@@ -162,9 +146,9 @@ private void popularComboBoxes() {
     }
     private void mostrarApenasReceitaNaTabela(Receita receita) {
     DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-    model.setRowCount(0); // Limpa a tabela
+    model.setRowCount(0); 
 
-    // Adiciona apenas a linha da receita especificada
+    
     model.addRow(new Object[]{
         false,
         receita.getId(),
@@ -175,7 +159,7 @@ private void popularComboBoxes() {
         receita.getCategoria()
     });
 
-    // Preenche o campo de busca e o filtro de categoria para refletir o estado
+    
     abapesquisa.setText(receita.getNome());
     filtro.setSelectedItem(receita.getCategoria());
 }
@@ -214,14 +198,7 @@ private void popularComboBoxes() {
     return receita;
 }
 
-//private void finalizarAcaoComSucesso() {
-//    popularTabela(); 
-//    mostrarApenasReceitaNaTabela()
-//    CardLayout card = (CardLayout) painelMain.getLayout();
-//    card.show(painelMain, "inicio");
-//    limparFormularioAdicionar();
-//    
-//}
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

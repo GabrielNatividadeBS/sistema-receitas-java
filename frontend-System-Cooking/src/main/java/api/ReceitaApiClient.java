@@ -30,7 +30,7 @@ public class ReceitaApiClient {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
-                // Converte o JSON (que é um texto) em uma Lista de objetos Receita
+                
                 return gson.fromJson(response.body(), new TypeToken<List<Receita>>() {
                 }.getType());
             } else {
@@ -55,11 +55,11 @@ public class ReceitaApiClient {
     } catch (IOException | InterruptedException e) {
         JOptionPane.showMessageDialog(null, "Erro ao buscar categorias da API.");
     }
-    return Collections.emptyList(); // Retorna lista vazia em caso de erro
+    return Collections.emptyList(); 
 }
 
 
-    // Salvar nova receita (POST)
+   
 public Receita salvarReceita(Receita novaReceita) {
     try {
         String jsonBody = gson.toJson(novaReceita);
@@ -72,7 +72,7 @@ public Receita salvarReceita(Receita novaReceita) {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         
         if (response.statusCode() == 201) {
-            // Converte a resposta JSON de volta para um objeto Receita
+            
             return gson.fromJson(response.body(), Receita.class);
         } else {
             JOptionPane.showMessageDialog(null, "Erro ao salvar receita. Código: " + response.statusCode());
@@ -84,7 +84,7 @@ public Receita salvarReceita(Receita novaReceita) {
     }
 }
 
-    // Atualizar receita existente (PUT)
+    
     public boolean atualizarReceita(int id, Receita receitaAtualizada) {
         try {
             String json = gson.toJson(receitaAtualizada);

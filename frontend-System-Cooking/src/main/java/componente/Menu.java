@@ -23,7 +23,7 @@ public class Menu extends javax.swing.JPanel {
         init();
     }
     private void init(){
-        listaMenu1.addItem(new ModeloMenu("1", "Dashboard", ModeloMenu.TipoMenu.MENU));
+        listaMenu1.addItem(new ModeloMenu("0", "Inicio", ModeloMenu.TipoMenu.MENU));
         
     }
     

@@ -9,7 +9,7 @@ public class CategoriaController {
         CategoriaDAO dao = new CategoriaDAO();
         Gson gson = new Gson();
         
-        // Rota para buscar todas as categorias
+        
         get("/categorias", (req, res) -> {
             res.type("application/json");
             return gson.toJson(dao.listarTodas());
