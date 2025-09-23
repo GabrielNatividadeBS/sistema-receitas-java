@@ -13,6 +13,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import modelo.Receita;
 import modelo.Categoria;
+import java.util.Map;
 public class ReceitaApiClient {
 
     private final HttpClient client = HttpClient.newHttpClient();
@@ -110,6 +111,63 @@ public Receita salvarReceita(Receita novaReceita) {
         }
     }
     
+    public boolean deletarReceita(int id) {
+        String url = API_URL + "/" + id;
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .DELETE()
+                .build();
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                
+                JOptionPane.showMessageDialog(null, response.body());
+                return true;
+            } else {
+                JOptionPane.showMessageDialog(null, "Erro ao deletar receita: " + response.body(), "Erro da API", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        } catch (IOException | InterruptedException e) {
+            JOptionPane.showMessageDialog(null, "Erro de conexão: " + e.getMessage());
+            return false;
+        }
+    }
     
+     public boolean deletarVariasReceitas(List<Integer> ids) {
+        String url = API_URL + "/multipleReceitas"; 
+        try {
+            String jsonBody = gson.toJson(ids);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Content-Type", "application/json")
+                    .method("DELETE", BodyPublishers.ofString(jsonBody))
+                    .build();
+            
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            
+            if (response.statusCode() == 200) {
+              
+                Map<String, Object> successResponse = gson.fromJson(response.body(), new TypeToken<Map<String, Object>>() {}.getType());
+                JOptionPane.showMessageDialog(null, successResponse.get("mensagem").toString());
+                return true;
+            } else {
+              
+                JOptionPane.showMessageDialog(null, 
+                    "Erro ao deletar receitas. Código: " + response.statusCode() + "\nResposta do Servidor: " + response.body(), 
+                    "Erro da API", 
+                    JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        } catch (IOException | InterruptedException e) {
+            JOptionPane.showMessageDialog(null, "Erro de conexão: " + e.getMessage());
+            return false;
+        }
+    }
+
 
 }
+    
+    
+
+

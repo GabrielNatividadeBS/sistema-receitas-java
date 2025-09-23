@@ -617,37 +617,66 @@ private void popularComboBoxes() {
     }//GEN-LAST:event_abapesquisaActionPerformed
 
     private void rSButtonHover5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSButtonHover5ActionPerformed
-    /*DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-    ReceitaApiClient apiClient = new ReceitaApiClient();
-    boolean algumSelecionado = false;
-
-    for (int i = model.getRowCount() - 1; i >= 0; i--) {
-        Boolean marcado = (Boolean) model.getValueAt(i, 0); // coluna Selecionar
-        if (marcado != null && marcado) {
-            algumSelecionado = true;
-            int idReceita = (Integer) model.getValueAt(i, 1); // coluna Id
-
-            int confirm = javax.swing.JOptionPane.showConfirmDialog(
-                this,
-                "Tem certeza que deseja remover a receita ID " + idReceita + "?",
-                "Confirmar remoção",
-                javax.swing.JOptionPane.YES_NO_OPTION
-            );
-
-            if (confirm == javax.swing.JOptionPane.YES_OPTION) {
-                boolean sucesso = apiClient.removerReceita(idReceita);
-                if (sucesso) {
-                    model.removeRow(i);
-                } else {
-                    javax.swing.JOptionPane.showMessageDialog(this, "Erro ao remover receita ID " + idReceita);
-                }
-            }
+   // Lista para guardar os IDs e nomes das receitas marcadas
+    List<Integer> idsSelecionados = new ArrayList<>();
+    List<String> nomesSelecionados = new ArrayList<>();
+    
+    // 1. Percorre a tabela para encontrar e contar os checkboxes marcados
+    DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+    for (int i = 0; i < model.getRowCount(); i++) {
+        // A coluna 0 é o checkbox (Boolean)
+        Boolean isChecked = (Boolean) model.getValueAt(i, 0);
+        
+        if (isChecked != null && isChecked) {
+            // Se a caixa estiver marcada, guarda o ID (coluna 1) e o Nome (coluna 2)
+            int id = Integer.parseInt(model.getValueAt(i, 1).toString());
+            String nome = model.getValueAt(i, 2).toString();
+            idsSelecionados.add(id);
+            nomesSelecionados.add(nome);
         }
     }
 
-    if (!algumSelecionado) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Nenhuma receita selecionada para remover.");
-    }*/
+    // 2. Validação da quantidade de itens selecionados
+    
+    // CASO 1: Mais de uma receita selecionada
+    if (idsSelecionados.size() > 1) {
+        JOptionPane.showMessageDialog(this, 
+            "Por favor, selecione apenas UMA receita para remover de cada vez.", 
+            "Seleção Múltipla Inválida", 
+            JOptionPane.WARNING_MESSAGE);
+        return; // Interrompe a ação
+    }
+    
+    // CASO 2: Nenhuma receita selecionada
+    if (idsSelecionados.isEmpty()) {
+        JOptionPane.showMessageDialog(this, 
+            "Por favor, selecione a receita que deseja remover.", 
+            "Nenhuma Receita Selecionada", 
+            JOptionPane.WARNING_MESSAGE);
+        return; // Interrompe a ação
+    }
+
+    // 3. Se chegamos aqui, exatamente UMA receita foi selecionada. Prosseguir com a exclusão.
+    int idParaDeletar = idsSelecionados.get(0);
+    String nomeParaDeletar = nomesSelecionados.get(0);
+
+    int confirm = JOptionPane.showConfirmDialog(this, 
+        "Tem certeza que deseja deletar a receita \"" + nomeParaDeletar + "\"?",
+        "Confirmar Exclusão", 
+        JOptionPane.YES_NO_OPTION);
+
+    if (confirm == JOptionPane.YES_OPTION) {
+        // Chama a API para deletar a receita única
+        boolean sucesso = this.apiClient.deletarReceita(idParaDeletar);
+        
+        // Se a deleção funcionar, atualiza a tabela na tela
+        if (sucesso) {
+            // Busca a lista mais recente do banco de dados via API
+            this.carregarDadosIniciaisDaAPI();
+            // Repopula a tabela com os dados atualizados
+            this.popularTabela(this.listaCompletaDeReceitas);
+        }
+    }
     }//GEN-LAST:event_rSButtonHover5ActionPerformed
 
     private void rSButtonHover6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSButtonHover6ActionPerformed

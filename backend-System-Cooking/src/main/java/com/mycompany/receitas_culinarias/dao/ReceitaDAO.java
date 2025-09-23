@@ -7,7 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.Statement;
-
+import java.util.Collections;
 public class ReceitaDAO {
 
  
@@ -149,7 +149,7 @@ public class ReceitaDAO {
     }
 
     public boolean deletar(int id) {
-    String sql = "DELETE FROM receitas WHERE id = ?";
+    String sql = "DELETE FROM receita WHERE id = ?";
 
     try (Connection con = Conexao.getConexao();
          PreparedStatement stmt = con.prepareStatement(sql)) {
@@ -159,8 +159,39 @@ public class ReceitaDAO {
         return linhasAfetadas > 0;
 
     } catch (SQLException e) {
+        System.err.println("Erro ao deletar receita: " + e.getMessage());
         e.printStackTrace();
         return false;
+    }
+}
+    
+    public int deletarVarios(List<Integer> ids) {
+    // Se a lista de IDs estiver vazia, não há nada a fazer.
+    if (ids == null || ids.isEmpty()) {
+        return 0;
+    }
+
+   
+    String placeholders = String.join(",", Collections.nCopies(ids.size(), "?"));
+    
+    
+    String sql = "DELETE FROM receita WHERE id IN (" + placeholders + ")";
+
+    try (Connection conn = Conexao.getConexao();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        
+       
+        for (int i = 0; i < ids.size(); i++) {
+            ps.setInt(i + 1, ids.get(i)); // 
+        }
+        
+       
+        return ps.executeUpdate();
+
+    } catch (SQLException e) {
+        System.err.println("Erro ao deletar múltiplas receitas: " + e.getMessage());
+        e.printStackTrace();
+        return 0;
     }
 }
 
