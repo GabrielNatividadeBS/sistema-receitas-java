@@ -15,6 +15,13 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 
 
 
@@ -28,7 +35,7 @@ public class Main extends javax.swing.JFrame {
     public Main() {
         initComponents();
          this.apiClient = new ReceitaApiClient(); 
-        
+          personalizarTabela();
         carregarDadosIniciaisDaAPI();
         popularTabela(this.listaCompletaDeReceitas); 
         popularComboBoxes(); //
@@ -37,6 +44,51 @@ public class Main extends javax.swing.JFrame {
         
     }
     
+private void personalizarTabela() {
+    if (jTable1 == null) return; // evita NullPointerException
+
+    // Altura das linhas
+    jTable1.setRowHeight(35);
+
+    // Fonte da tabela
+    jTable1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+
+    // Seleção inteira da linha
+    jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    jTable1.setRowSelectionAllowed(true);
+    jTable1.setColumnSelectionAllowed(false);
+
+    // Bordas leves
+    jTable1.setShowGrid(true);
+    jTable1.setGridColor(new Color(200, 200, 200));
+
+    // Cabeçalho da tabela
+    jTable1.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 15));
+    jTable1.getTableHeader().setBackground(new Color(60, 63, 65));
+    jTable1.getTableHeader().setForeground(Color.WHITE);
+    jTable1.getTableHeader().setReorderingAllowed(false);
+
+    // Renderer para cores alternadas e seleção
+    jTable1.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+
+            super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+            if (isSelected) {
+                setBackground(new Color(0, 120, 215)); // azul seleção
+                setForeground(Color.WHITE);
+            } else {
+                setBackground(row % 2 == 0 ? Color.WHITE : new Color(245, 245, 245)); // linhas alternadas
+                setForeground(Color.BLACK);
+            }
+
+            setHorizontalAlignment(SwingConstants.CENTER); // alinhamento central
+            return this;
+        }
+    });
+}
      private void carregarDadosIniciaisDaAPI() {
         this.listaCompletaDeReceitas = apiClient.buscarReceitas();
         this.listaCompletaDeCategorias = apiClient.buscarTodasCategorias();
@@ -181,11 +233,17 @@ private void popularComboBoxes() {
 }
     
     private void limparFormularioAdicionar() {
+    nome.putClientProperty("idReceitaEditando", null);    
     nome.setText("");
     ingrediente.setText("");
     modop.setText("");
     tempop.setText("");
     comboCategoriaAdicionar.setSelectedIndex(0);
+    
+    DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+    for (int i = 0; i < model.getRowCount(); i++) {
+        model.setValueAt(false, i, 0);
+    }
 }
     private Receita getReceitaDoFormulario() {
     if (nome.getText().trim().isEmpty() || ingrediente.getText().trim().isEmpty() || 
@@ -278,7 +336,7 @@ private void popularComboBoxes() {
         painelBorda1.add(rSButtonHover1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 170, 224, -1));
 
         rSButtonHover2.setBackground(new java.awt.Color(66, 134, 244));
-        rSButtonHover2.setText("Inicio");
+        rSButtonHover2.setText("Ínicio");
         rSButtonHover2.setFont(new java.awt.Font("Raleway Light", 1, 18)); // NOI18N
         rSButtonHover2.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         rSButtonHover2.setIconTextGap(0);
@@ -426,17 +484,13 @@ private void popularComboBoxes() {
         Inicio.setLayout(InicioLayout);
         InicioLayout.setHorizontalGroup(
             InicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, InicioLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 803, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 815, Short.MAX_VALUE)
         );
         InicioLayout.setVerticalGroup(
             InicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, InicioLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addGroup(InicioLayout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 444, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 6, Short.MAX_VALUE))
         );
 
         painelMain.add(Inicio, "inicio");
